@@ -1,26 +1,76 @@
 require.register('main', function (exports, require, module) {
     'use strict';
+    var newContact = {
+        name: '',
+        email: '',
+        description: ''
+    };
+    var contacts = [
+        {
+            key: 1,
+            name: 'James K Nelson',
+            email: 'james@jamesknelson.com',
+            description: 'Front-end Unicorn'
+        },
+        {
+            key: 2,
+            name: 'Jim',
+            email: 'jim@example.com'
+        },
+        {
+            key: 3,
+            name: 'Joe'
+        }
+    ];
+    /*
+Components
+*/
+    var ContactItem = React.createClass({
+        displayName: 'ContactItem',
+        propTypes: {
+            name: React.PropTypes.string.isRequired,
+            email: React.PropTypes.string.isRequired,
+            description: React.PropTypes.string
+        },
+        render: function render() {
+            return React.createElement('li', { className: 'ContactItem' }, React.createElement('h2', { className: 'ContactItem-name' }, this.props.name), React.createElement('a', {
+                href: 'mailto:' + this.props.email,
+                className: 'ContactItem-email'
+            }, this.props.email), React.createElement('div', { className: 'ContactItem-description' }, this.props.description));
+        }
+    });
+    var ContactForm = React.createClass({
+        displayName: 'ContactForm',
+        propTypes: { contact: React.PropTypes.object.isRequired },
+        render: function render() {
+            return React.createElement('form', { className: 'ContactForm' }, React.createElement('input', {
+                type: 'text',
+                placeholder: 'Name (required)',
+                value: this.props.contact.name
+            }), React.createElement('input', {
+                type: 'text',
+                placeholder: 'Email',
+                value: this.props.contact.email
+            }), React.createElement('textarea', {
+                placeholder: 'Description',
+                value: this.props.contact.description
+            }), React.createElement('button', { type: 'submit' }, 'Add Contact'));
+        }
+    });
+    /*
+Render
+*/
+    var listElements = contacts.filter(function (contact) {
+        return contact.email;
+    }).map(function (contact) {
+        return React.createElement(ContactItem, contact);
+    });
     var RootElement = React.createClass({
         displayName: 'RootElement',
         render: function render() {
-            return React.createElement('div', null, React.createElement('h1', null, 'Contacts'), React.createElement('ul', null, React.createElement('li', null, React.createElement('h2', null, 'James Nelson'), React.createElement('a', { href: 'mailto:james@jamesknelson.com' }, 'james@jamesknelson.com')), React.createElement('li', null, React.createElement('h2', null, 'Joe Citizen'), React.createElement('a', { href: 'joe@example.com' }, 'joe@example.com'))));
+            return React.createElement('div', { className: 'ContactView' }, React.createElement('h1', { className: 'ContactView-title' }, 'Contacts'), React.createElement('ul', { className: 'ContactView-list' }, listElements), React.createElement(ContactForm, { contact: this.props.contact }));
         }
     });
-    ReactDOM.render(React.createElement(RootElement, null), document.getElementById('react-app'));    // var rootElement =
-                                                                                                      //   React.createElement('div', {},
-                                                                                                      //     React.createElement('h1', {}, "Contacts"),
-                                                                                                      //     React.createElement('ul', {},
-                                                                                                      //       React.createElement('li', {},
-                                                                                                      //         React.createElement('h2', {}, "James Nelson"),
-                                                                                                      //         React.createElement('a', {href: 'mailto:james@jamesknelson.com'}, 'james@jamesknelson.com')
-                                                                                                      //       ),
-                                                                                                      //       React.createElement('li', {},
-                                                                                                      //         React.createElement('h2', {}, "Joe Citizen"),
-                                                                                                      //         React.createElement('a', {href: 'mailto:joe@example.com'}, 'joe@example.com')
-                                                                                                      //       )
-                                                                                                      //     )
-                                                                                                      //   )
-                                                                                                      //
-                                                                                                      // ReactDOM.render(rootElement, document.getElementById('container'))
+    ReactDOM.render(React.createElement(RootElement, { contact: newContact }), document.getElementById('react-app'));
 });
 //# sourceMappingURL=app.js.map

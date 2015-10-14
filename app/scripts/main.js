@@ -1,38 +1,80 @@
+/*
+Data
+*/
+
+var newContact = {name: "", email: "", description: ""};
+
+var contacts = [
+    {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+    {key: 2, name: "Jim", email: "jim@example.com"},
+    {key: 3, name: "Joe"},
+];
+
+/*
+Components
+*/
+
+var ContactItem = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    email: React.PropTypes.string.isRequired,
+    description: React.PropTypes.string
+  },
+  render() {
+    return (
+      <li className="ContactItem">
+        <h2 className="ContactItem-name">{this.props.name}</h2>
+        <a href={'mailto:' + this.props.email} className="ContactItem-email">{this.props.email}</a>
+        <div className="ContactItem-description">{this.props.description}</div>
+      </li>
+    )
+  }
+});
+
+var ContactForm = React.createClass({
+  propTypes: {
+    contact: React.PropTypes.object.isRequired
+  },
+
+  render() {
+    return(
+      <form className="ContactForm">
+        <input type="text" placeholder="Name (required)" value={this.props.contact.name} />
+        <input type="text" placeholder="Email" value={this.props.contact.email} />
+        <textarea placeholder="Description" value={this.props.contact.description} />
+        <button type="submit">Add Contact</button>
+      </form>
+    )
+  }
+});
+
+/*
+Render
+*/
+
+var listElements = contacts
+  .filter(function(contact){
+    return contact.email;
+  })
+  .map(function(contact){
+    return <ContactItem {...contact} />;
+  });
+
+
+
+
 var RootElement = React.createClass({
   render() {
     return(
-      <div>
-        <h1>Contacts</h1>
-        <ul>
-          <li>
-            <h2>James Nelson</h2>
-            <a href="mailto:james@jamesknelson.com">james@jamesknelson.com</a>
-          </li>
-          <li>
-            <h2>Joe Citizen</h2>
-            <a href="joe@example.com">joe@example.com</a>
-          </li>
+      <div className="ContactView">
+        <h1 className="ContactView-title">Contacts</h1>
+        <ul className="ContactView-list">
+          {listElements}
         </ul>
+        <ContactForm contact={this.props.contact}></ContactForm>
       </div>
     )
   }
 })
 
-ReactDOM.render(<RootElement />, document.getElementById('react-app'))
-
-// var rootElement =
-//   React.createElement('div', {},
-//     React.createElement('h1', {}, "Contacts"),
-//     React.createElement('ul', {},
-//       React.createElement('li', {},
-//         React.createElement('h2', {}, "James Nelson"),
-//         React.createElement('a', {href: 'mailto:james@jamesknelson.com'}, 'james@jamesknelson.com')
-//       ),
-//       React.createElement('li', {},
-//         React.createElement('h2', {}, "Joe Citizen"),
-//         React.createElement('a', {href: 'mailto:joe@example.com'}, 'joe@example.com')
-//       )
-//     )
-//   )
-//
-// ReactDOM.render(rootElement, document.getElementById('container'))
+ReactDOM.render(<RootElement contact={newContact}/>, document.getElementById('react-app'));
